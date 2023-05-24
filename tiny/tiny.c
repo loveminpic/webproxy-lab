@@ -58,6 +58,7 @@ void doit(int fd) // HTTP 트랜잭션을 처리하는 함수
   printf("Request headers:\n");
   printf("%s", buf);
   sscanf(buf, "%s %s %s", method, uri, version); // buf에 담긴 string을 3의 문자열로 나눈다음 각각 담겠다는 뜻.
+
   // tiny 는 GET 요청만 받아서, 다른 요청이 들어오면 에러메세지 보내고 다시 메인으로 return.
   if(!(strcasecmp(method, "GET")== 0) && !(strcasecmp(method, "HEAD") == 0)) {
     clienterror(fd, method, "501", "Not implemented", "Tiny does not implement this method");
@@ -197,6 +198,7 @@ void sig_child_handeler(int sig){
   while(waitpid(-1, NULL, 0) > 0)
     errno = old_error;
 }
+
 void get_filetype(char *filename, char *filetype) 
 {
   if (strstr(filename, ".html")){
@@ -217,16 +219,4 @@ void get_filetype(char *filename, char *filetype)
   else{
     strcpy(filetype, "text/plain");
   }
-}
-
-void echo (int connfd){
-    size_t n;
-    char buf[MAXLINE];
-    rio_t rio;
-
-    Rio_readinitb(&rio, connfd);
-    while((n = Rio_readlineb(&rio, buf, MAXLINE)) != 0){
-        printf("server received %d bytes\n", (int)n);
-        Rio_writen(connfd,buf,n);
-    }
 }
